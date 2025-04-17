@@ -1,6 +1,9 @@
+import asyncio
 import sys
 import json
 import os
+import platform
+import subprocess
 from . import sv, MODULES_ON, MODULES_PATH, BOTNAME, log, SAMPLE
 from .libraries.git_tool import GitTool
 from hoshino.typing import CQEvent
@@ -129,4 +132,12 @@ async def exit_after_update(bot, ev):
         json.dump(data, f, ensure_ascii=False, indent=4)
 
     print("即将关闭进程...")
-    sys.exit(0)
+
+    if platform.system() == "Darwin":
+        print("🍎 检测到 macOS，调用外部重启脚本...")
+        try:
+            subprocess.Popen(["/bin/bash", "/Users/vsentkb/Bot/HoshinoBot/hoshino.sh", "restart"])
+        except Exception as e:
+            print(f"⚠️ 无法执行重启脚本: {e}")
+
+    sys.exit(0)  # 正常退出
